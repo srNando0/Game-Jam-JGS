@@ -7,6 +7,8 @@ extends CharacterBody2D
 
 var motion: Vector2 = Vector2.ZERO
 
+var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+
 
 static func rot_right(v: Vector2) -> Vector2:
 	return Vector2(-v.y, v.x)
@@ -15,8 +17,9 @@ static func rot_right(v: Vector2) -> Vector2:
 func _physics_process(delta: float) -> void:
 	# Horizontal movement
 	motion.x = speed * Input.get_axis("left", "right")
-	if Input.is_action_just_pressed("jump"):
+	if Input.is_action_just_pressed("jump") and is_on_floor():
 		start_jump(jump_height)
+		$Audios/Jump.play_random(rng, 0.1)
 	if Input.is_action_just_released("jump"):
 		stop_jump()
 	
@@ -47,6 +50,9 @@ func compute_velocity(delta: float) -> void:
 	displacement += motion.x * delta * rot_right(up_direction)
 	# Vertical component
 	if is_on_floor():
+		if motion.y < 0.0:
+			$Audios/Fall.volume_linear = -motion.y/2000
+			$Audios/Fall.play_random(rng, 0.1)
 		motion.y = max(0.0, motion.y)
 		displacement += motion.y * delta * up_direction
 	else:

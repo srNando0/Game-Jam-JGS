@@ -1,6 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://uxgl1mx5i6rh"]
+[gd_scene load_steps=6 format=3 uid="uid://uxgl1mx5i6rh"]
 
 [ext_resource type="Script" uid="uid://bb6mcnnjhg84a" path="res://player/player.gd" id="1_oul6g"]
+[ext_resource type="AudioStream" uid="uid://tbhdcj37tnke" path="res://player/res/jump.wav" id="2_rkbax"]
+[ext_resource type="AudioStream" uid="uid://b45tf1x0uilv8" path="res://player/res/fall.wav" id="3_g1dw6"]
+[ext_resource type="Script" uid="uid://bq0p7umiddbb4" path="res://system/sound_effect_2d.gd" id="3_yw30f"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kqu6x"]
 radius = 25.0
@@ -19,3 +22,16 @@ points = PackedVector2Array(0, -25, 0, 25)
 width = 50.0
 begin_cap_mode = 2
 end_cap_mode = 2
+
+[node name="Audios" type="Node2D" parent="."]
+
+[node name="Jump" type="AudioStreamPlayer2D" parent="Audios"]
+stream = ExtResource("2_rkbax")
+volume_db = -12.0
+script = ExtResource("3_yw30f")
+metadata/_custom_type_script = "uid://bq0p7umiddbb4"
+
+[node name="Fall" type="AudioStreamPlayer2D" parent="Audios"]
+stream = ExtResource("3_g1dw6")
+script = ExtResource("3_yw30f")
+metadata/_custom_type_script = "uid://bq0p7umiddbb4"
