@@ -63,6 +63,7 @@ func start_jump(height: float) -> void:
 func stop_jump() -> void:
 	if not is_on_floor() and motion.y > 0.0:
 		motion.y = 0.0
+	jump_pass = true
 
 
 func compute_velocity_on_fall(delta: float) -> void:
