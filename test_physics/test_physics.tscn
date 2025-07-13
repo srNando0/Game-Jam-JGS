@@ -8,6 +8,15 @@ size = Vector2(128, 128)
 
 [node name="TestPhysics" type="Node2D"]
 
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+position = Vector2(615, 517)
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D2"]
+texture = ExtResource("1_yagri")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
+shape = SubResource("RectangleShape2D_pajev")
+
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2(389, 577)
 

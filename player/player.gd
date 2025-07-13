@@ -1,11 +1,16 @@
 extends CharacterBody2D
 
-@export var speed: float = 400
-@export var gravity: float = 2000
-@export var jump_height: float = 160
-@export var max_fall_speed: float = 800
+@export var speed: float = 400.0
+@export var gravity: float = 2000.0
+@export var jump_height: float = 160.0
+@export var max_fall_speed: float = 800.0
+@export var dash_length: float = 400.0
+@export var dash_time: float = 1.0/3.0
+@export var dash_time_window: float = 1.0/12.0
 
 var motion: Vector2 = Vector2.ZERO
+var jump_pass: bool = true
+var prev_on_floor: bool = is_on_floor()
 
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
@@ -15,16 +20,7 @@ static func rot_right(v: Vector2) -> Vector2:
 
 
 func _physics_process(delta: float) -> void:
-	# Horizontal movement
-	motion.x = speed * Input.get_axis("left", "right")
-	if Input.is_action_just_pressed("jump") and is_on_floor():
-		start_jump(jump_height)
-		$Audios/Jump.play_random(rng, 0.1)
-	if Input.is_action_just_released("jump"):
-		stop_jump()
-	
-	compute_velocity(delta)
-	move_and_slide()
+	move_platform_mode(delta)
 	
 	var line: Line2D = $Line2D
 	if is_on_floor():
@@ -33,9 +29,35 @@ func _physics_process(delta: float) -> void:
 		line.default_color = Color(0.0, 0.0, 1.0)
 
 
+func move_platform_mode(delta: float) -> void:
+	# Before motion
+	play_floor()
+	
+	# Motion on floor
+	motion.x = speed * Input.get_axis("left", "right")
+	
+	# Jump
+	if Input.is_action_pressed("jump") and is_on_floor() and jump_pass:
+		start_jump(jump_height)
+		var sound_effect: SoundEffect2D = $Audios/Jump
+		sound_effect.play_random(rng, 0.1)
+	# Cancel jump
+	if Input.is_action_just_released("jump"):
+		stop_jump()
+	
+	# Move
+	compute_velocity_on_fall(delta)
+	move_and_slide()
+
+
+func move_dash_mode(delta: float) -> void:
+	pass
+
+
 func start_jump(height: float) -> void:
 	# v^2 = v_0^2 + 2aDs
 	motion.y = sqrt(2.0 * gravity * height)
+	jump_pass = false
 
 
 func stop_jump() -> void:
@@ -43,16 +65,13 @@ func stop_jump() -> void:
 		motion.y = 0.0
 
 
-func compute_velocity(delta: float) -> void:
+func compute_velocity_on_fall(delta: float) -> void:
 	# Construct displacement vector
 	var displacement: Vector2 = Vector2.ZERO
 	# Horizontal component
 	displacement += motion.x * delta * rot_right(up_direction)
 	# Vertical component
 	if is_on_floor():
-		if motion.y < 0.0:
-			$Audios/Fall.volume_linear = -motion.y/2000
-			$Audios/Fall.play_random(rng, 0.1)
 		motion.y = max(0.0, motion.y)
 		displacement += motion.y * delta * up_direction
 	else:
@@ -68,3 +87,11 @@ func compute_velocity(delta: float) -> void:
 		motion.y = max(motion.y - gravity * delta, -max_fall_speed)
 	
 	velocity = displacement/delta
+
+
+func play_floor() -> void:
+	if is_on_floor() and not prev_on_floor:
+		var sound_effect: SoundEffect2D = $Audios/Fall
+		sound_effect.volume_linear = -motion.y/2000.0
+		sound_effect.play_random(rng, 0.1)
+	prev_on_floor = is_on_floor()
