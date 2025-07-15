@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://yhqr8q15sswa"]
+[gd_scene load_steps=7 format=3 uid="uid://yhqr8q15sswa"]
 
 [ext_resource type="Texture2D" uid="uid://dd7f23riunvvw" path="res://icon.svg" id="1_yagri"]
 [ext_resource type="PackedScene" uid="uid://uxgl1mx5i6rh" path="res://player/player.tscn" id="2_pajev"]
@@ -6,16 +6,60 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pajev"]
 size = Vector2(128, 128)
 
+[sub_resource type="Animation" id="Animation_5jsbr"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(615, 517)]
+}
+
+[sub_resource type="Animation" id="Animation_pajev"]
+resource_name = "move platform test"
+length = 3.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(615, 517), Vector2(986, 407), Vector2(604, 330), Vector2(615, 517)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_t2uwi"]
+_data = {
+&"RESET": SubResource("Animation_5jsbr"),
+&"move platform test": SubResource("Animation_pajev")
+}
+
 [node name="TestPhysics" type="Node2D"]
 
-[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+[node name="AnimatableBody2D" type="AnimatableBody2D" parent="."]
 position = Vector2(615, 517)
 
-[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D2"]
+[node name="Sprite2D" type="Sprite2D" parent="AnimatableBody2D"]
 texture = ExtResource("1_yagri")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatableBody2D"]
 shape = SubResource("RectangleShape2D_pajev")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="AnimatableBody2D"]
+libraries = {
+&"": SubResource("AnimationLibrary_t2uwi")
+}
+autoplay = "move platform test"
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2(389, 577)
