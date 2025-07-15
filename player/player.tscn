@@ -1,37 +1,64 @@
-[gd_scene load_steps=6 format=3 uid="uid://uxgl1mx5i6rh"]
+[gd_scene load_steps=7 format=3 uid="uid://uxgl1mx5i6rh"]
 
 [ext_resource type="Script" uid="uid://bb6mcnnjhg84a" path="res://player/player.gd" id="1_oul6g"]
 [ext_resource type="AudioStream" uid="uid://tbhdcj37tnke" path="res://player/res/jump.wav" id="2_rkbax"]
 [ext_resource type="AudioStream" uid="uid://b45tf1x0uilv8" path="res://player/res/fall.wav" id="3_g1dw6"]
 [ext_resource type="Script" uid="uid://bq0p7umiddbb4" path="res://system/sound_effect_2d.gd" id="3_yw30f"]
+[ext_resource type="AudioStream" uid="uid://bb0y5j24s222q" path="res://player/res/dash.wav" id="5_qjkh3"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kqu6x"]
-radius = 25.0
-height = 100.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yw30f"]
+size = Vector2(50, 100)
 
 [node name="Player" type="CharacterBody2D"]
-slide_on_ceiling = false
 floor_constant_speed = true
 script = ExtResource("1_oul6g")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CapsuleShape2D_kqu6x")
+shape = SubResource("RectangleShape2D_yw30f")
 
-[node name="Line2D" type="Line2D" parent="."]
+[node name="Images" type="Node2D" parent="."]
+
+[node name="Line2D" type="Line2D" parent="Images"]
 points = PackedVector2Array(0, -25, 0, 25)
 width = 50.0
+begin_cap_mode = 1
+end_cap_mode = 1
+
+[node name="Line2D2" type="Line2D" parent="Images"]
+points = PackedVector2Array(0, 0, 20, 0)
+default_color = Color(0, 0, 0, 1)
 begin_cap_mode = 2
 end_cap_mode = 2
 
 [node name="Audios" type="Node2D" parent="."]
 
-[node name="Jump" type="AudioStreamPlayer2D" parent="Audios"]
+[node name="JumpSFX" type="AudioStreamPlayer2D" parent="Audios"]
 stream = ExtResource("2_rkbax")
-volume_db = -12.0
+volume_db = -9.0
 script = ExtResource("3_yw30f")
 metadata/_custom_type_script = "uid://bq0p7umiddbb4"
 
-[node name="Fall" type="AudioStreamPlayer2D" parent="Audios"]
+[node name="FallSFX" type="AudioStreamPlayer2D" parent="Audios"]
 stream = ExtResource("3_g1dw6")
 script = ExtResource("3_yw30f")
 metadata/_custom_type_script = "uid://bq0p7umiddbb4"
+
+[node name="DashSFX" type="AudioStreamPlayer2D" parent="Audios"]
+stream = ExtResource("5_qjkh3")
+script = ExtResource("3_yw30f")
+metadata/_custom_type_script = "uid://bq0p7umiddbb4"
+
+[node name="Timers" type="Node" parent="."]
+
+[node name="DashTimer" type="Timer" parent="Timers"]
+process_callback = 0
+wait_time = 0.375
+one_shot = true
+
+[node name="DashCooldownTimer" type="Timer" parent="Timers"]
+process_callback = 0
+one_shot = true
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[connection signal="timeout" from="Timers/DashTimer" to="." method="_on_dash_timer_timeout"]
