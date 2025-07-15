@@ -7,7 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://bb0y5j24s222q" path="res://player/res/dash.wav" id="5_qjkh3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yw30f"]
-size = Vector2(50, 100)
+size = Vector2(50, 140)
 
 [node name="Player" type="CharacterBody2D"]
 floor_constant_speed = true
@@ -19,7 +19,7 @@ shape = SubResource("RectangleShape2D_yw30f")
 [node name="Images" type="Node2D" parent="."]
 
 [node name="Line2D" type="Line2D" parent="Images"]
-points = PackedVector2Array(0, -25, 0, 25)
+points = PackedVector2Array(0, -45, 0, 45)
 width = 50.0
 begin_cap_mode = 1
 end_cap_mode = 1
