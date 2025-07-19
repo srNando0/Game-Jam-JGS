@@ -1,0 +1,87 @@
+[gd_scene load_steps=8 format=3 uid="uid://bokrdeiked055"]
+
+[ext_resource type="Script" uid="uid://iihwbncrutx4" path="res://king/king.gd" id="1_86e4s"]
+[ext_resource type="Script" uid="uid://ctionu45743rx" path="res://system/state_machine.gd" id="2_kfk51"]
+[ext_resource type="Script" uid="uid://b564qx878riv6" path="res://king/states/punch.gd" id="3_4a5er"]
+[ext_resource type="Script" uid="uid://wmlpqh81004d" path="res://king/states/idle.gd" id="4_4a5er"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4fx1e"]
+size = Vector2(140, 240)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4a5er"]
+size = Vector2(116, 224)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bg006"]
+radius = 27.074
+
+[node name="King" type="CharacterBody2D"]
+collision_layer = 0
+script = ExtResource("1_86e4s")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_4fx1e")
+
+[node name="Moveset" type="Node" parent="." node_paths=PackedStringArray("state")]
+script = ExtResource("2_kfk51")
+state = NodePath("Idle")
+metadata/_custom_type_script = "uid://ctionu45743rx"
+
+[node name="Punch" type="Node" parent="Moveset" node_paths=PackedStringArray("king", "idle_state", "hold_timer", "dash_timer", "cloth")]
+script = ExtResource("3_4a5er")
+king = NodePath("../..")
+idle_state = NodePath("../Idle")
+hold_timer = NodePath("HoldTimer")
+dash_timer = NodePath("DashTimer")
+cloth = NodePath("../../Images/Cloth")
+metadata/_custom_type_script = "uid://cbfy3hxu1yusp"
+
+[node name="HoldTimer" type="Timer" parent="Moveset/Punch"]
+process_callback = 0
+wait_time = 0.5
+one_shot = true
+
+[node name="DashTimer" type="Timer" parent="Moveset/Punch"]
+process_callback = 0
+one_shot = true
+
+[node name="Idle" type="Node" parent="Moveset" node_paths=PackedStringArray("king", "punch_state", "idle_timer", "cloth")]
+script = ExtResource("4_4a5er")
+king = NodePath("../..")
+punch_state = NodePath("../Punch")
+idle_timer = NodePath("IdleTimer")
+cloth = NodePath("../../Images/Cloth")
+metadata/_custom_type_script = "uid://cbfy3hxu1yusp"
+
+[node name="IdleTimer" type="Timer" parent="Moveset/Idle"]
+process_callback = 0
+one_shot = true
+
+[node name="Images" type="Node2D" parent="."]
+
+[node name="Cloth" type="Polygon2D" parent="Images"]
+scale = Vector2(-1, 1)
+polygon = PackedVector2Array(-47, -70, -58, -104, -41, -136, -19, -130, 7, -107, 60, -85, 81, -8, 90, 122, 41, 120, -37, 120, -83, 121, -78, -5, -65, -51)
+
+[node name="Face" type="Polygon2D" parent="Images"]
+scale = Vector2(-1, 1)
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-33, -122, -47, -103, -31, -73, -38, 111, 53, 111, 25, -63, -4, -81)
+
+[node name="Hand" type="Polygon2D" parent="Images"]
+scale = Vector2(-1, 1)
+color = Color(1, 0, 0, 1)
+polygon = PackedVector2Array(-74, -10, -93, -30, -119, -30, -129, 4, -110, 8, -106, 21, -72, 12)
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="Body" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, 8)
+shape = SubResource("RectangleShape2D_4a5er")
+
+[node name="Hand" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(100, -6)
+shape = SubResource("CircleShape2D_bg006")
+
+[connection signal="timeout" from="Moveset/Punch/HoldTimer" to="Moveset/Punch" method="_on_hold_timer_timeout"]
+[connection signal="timeout" from="Moveset/Punch/DashTimer" to="Moveset/Punch" method="_on_dash_timer_timeout"]
+[connection signal="timeout" from="Moveset/Idle/IdleTimer" to="Moveset/Idle" method="_on_idle_timer_timeout"]

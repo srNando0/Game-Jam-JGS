@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://dwdxl3e12qogc"]
+
+[ext_resource type="Script" uid="uid://ccoo2wuw64e80" path="res://camera/smooth_camera.gd" id="1_15aid"]
+
+[node name="SmoothCamera" type="Node2D"]
+script = ExtResource("1_15aid")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+process_callback = 0
+position_smoothing_speed = 1.0

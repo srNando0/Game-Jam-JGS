@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://cgju2v2xh086e"]
+[gd_scene load_steps=8 format=3 uid="uid://cgju2v2xh086e"]
 
 [ext_resource type="Texture2D" uid="uid://bsjcigarer8nh" path="res://stage/res/base_bg.png" id="1_s88my"]
 [ext_resource type="Texture2D" uid="uid://w34scpoom07m" path="res://stage/res/under_floor.png" id="2_ve7pq"]
 [ext_resource type="Texture2D" uid="uid://pyf6wvc5g63f" path="res://stage/res/wall_deco.png" id="3_cxybx"]
 [ext_resource type="Texture2D" uid="uid://byi5j6v7yljfx" path="res://stage/res/floor.png" id="4_au0sk"]
 [ext_resource type="PackedScene" uid="uid://uxgl1mx5i6rh" path="res://player/player.tscn" id="5_ve7pq"]
+[ext_resource type="PackedScene" uid="uid://dwdxl3e12qogc" path="res://smooth_camera.tscn" id="6_cxybx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u7g2e"]
 size = Vector2(10328, 80)
@@ -129,7 +130,7 @@ texture = ExtResource("4_au0sk")
 centered = false
 
 [node name="Unit4" type="Node2D" parent="Corridor/CorridorFloor/Images"]
-position = Vector2(1347, 0)
+position = Vector2(1346, 0)
 
 [node name="UnderFloor" type="Sprite2D" parent="Corridor/CorridorFloor/Images/Unit4"]
 position = Vector2(0, 661)
@@ -150,7 +151,8 @@ texture = ExtResource("4_au0sk")
 centered = false
 
 [node name="Unit5" type="Node2D" parent="Corridor/CorridorFloor/Images"]
-position = Vector2(1796, 0)
+position = Vector2(1795, 0)
+scale = Vector2(1.01, 1)
 
 [node name="UnderFloor" type="Sprite2D" parent="Corridor/CorridorFloor/Images/Unit5"]
 position = Vector2(0, 661)
@@ -555,19 +557,12 @@ position = Vector2(5164, 660)
 shape = SubResource("RectangleShape2D_u7g2e")
 
 [node name="Player" parent="." instance=ExtResource("5_ve7pq")]
-position = Vector2(640, 550)
-walk_speed = 540.0
-gravity = 2800.0
-jump_height = 200.0
-max_fall_speed = 1600.0
-dash_length = 320.0
-dash_time_window = 0.08
+position = Vector2(640, 560)
+dash_time_window = 0.1
 
-[node name="Camera2D" type="Camera2D" parent="Player"]
-process_callback = 0
-limit_left = 0
-limit_top = 0
-limit_bottom = 800
-limit_smoothed = true
-position_smoothing_enabled = true
-position_smoothing_speed = 8.0
+[node name="SmoothCamera" parent="Player" instance=ExtResource("6_cxybx")]
+left = 0
+top = 0
+bottom = 720
+margin = 100.0
+speed = 5.0

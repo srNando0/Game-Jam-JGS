@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://bjdu80ddrqujw"]
+
+[ext_resource type="Texture2D" uid="uid://dd7f23riunvvw" path="res://icon.svg" id="1_eyrl1"]
+[ext_resource type="PackedScene" uid="uid://uxgl1mx5i6rh" path="res://player/player.tscn" id="2_kgknf"]
+[ext_resource type="PackedScene" uid="uid://bokrdeiked055" path="res://king/king.tscn" id="3_406qh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kgknf"]
+size = Vector2(1280, 40)
+
+[node name="TestKingArena" type="Node2D"]
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(0, 680)
+
+[node name="Sprite2D" type="Sprite2D" parent="Floor"]
+position = Vector2(0, -9.53674e-07)
+scale = Vector2(10, 0.3125)
+texture = ExtResource("1_eyrl1")
+centered = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+position = Vector2(640, 20)
+shape = SubResource("RectangleShape2D_kgknf")
+
+[node name="Player" parent="." instance=ExtResource("2_kgknf")]
+position = Vector2(82, 620)
+jump_height = 240.0
+
+[node name="King" parent="." node_paths=PackedStringArray("player") instance=ExtResource("3_406qh")]
+position = Vector2(658, 560)
+player = NodePath("../Player")

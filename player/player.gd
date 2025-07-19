@@ -1,4 +1,4 @@
-extends CharacterBody2D
+class_name Player extends CharacterBody2D
 
 enum MoveMode {
 	Platform,
@@ -6,14 +6,14 @@ enum MoveMode {
 }
 
 @export_group("Platform mode")
-@export var walk_speed: float = 400.0
-@export var gravity: float = 2000.0
-@export var jump_height: float = 160.0
-@export var max_fall_speed: float = 800.0
+@export var walk_speed: float = 540.0
+@export var gravity: float = 2800.0
+@export var jump_height: float = 200.0
+@export var max_fall_speed: float = 1600.0
 
 @export_group("Dash mode")
-@export var dash_length: float = 200.0
-@export var dash_time_window: float = 0.075
+@export var dash_length: float = 320.0
+@export var dash_time_window: float = 0.05
 
 var move_mode: MoveMode = MoveMode.Platform
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -37,6 +37,8 @@ static func rot_right(v: Vector2) -> Vector2:
 
 
 func _ready() -> void:
+	rng.randomize()
+	
 	# Define initial dash_direction
 	var image: Node2D = $Images
 	dash_direction = (
@@ -72,6 +74,7 @@ func move_platform_mode(delta: float) -> void:
 		
 		if jump_action:
 			start_jump(jump_height)
+			
 			var sfx: SoundEffect2D = $Audios/JumpSFX
 			sfx.play_random(rng, 0.1)
 	
@@ -89,6 +92,18 @@ func move_platform_mode(delta: float) -> void:
 			and dash_pass
 	):
 		dash_start()
+	
+	# Image
+	var animation: AnimationPlayer = $Images/AnimatedSprite2D/AnimationPlayer
+	if is_on_floor():
+		if not is_zero_approx(motion.x):
+			if animation.current_animation != "run":
+				animation.play("run")
+		else:
+			if animation.current_animation != "idle":
+				animation.play("idle")
+	else:
+		animation.play("jump")
 
 
 func start_jump(height: float) -> void:
@@ -148,12 +163,15 @@ func move_dash_mode(delta: float) -> void:
 			dash_start()
 		else:
 			dash_pass = false
-	if Input.is_action_just_released("dash"):
-		dash_stop()
 	
 	# Move
 	compute_velocity_on_dash(delta)
 	move_and_slide()
+	
+	# Image
+	var animation: AnimationPlayer = $Images/AnimatedSprite2D/AnimationPlayer
+	if animation.current_animation != "dash":
+		animation.play("dash")
 
 
 func dash_start() -> void:
@@ -198,7 +216,6 @@ func define_dash_direction() -> void:
 func dash_function(x: float, order: float = 3.0) -> float:
 	var f: float = 1.0 - pow(1.0 - x, order)
 	return clamp(f, 0.0, 1.0)
-
 
 
 #========
